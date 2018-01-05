@@ -1,0 +1,3 @@
+<launch>
+<node name="image_read" type="image_read" pkg="capture" args="_image_transport:=compressed" />
+</launch>
