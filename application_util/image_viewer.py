@@ -139,8 +139,10 @@ class ImageViewer(object):
             rectangle.
 
         """
-        pt1 = int(y), int(x) #interchanged
-        pt2 = int(y + h), int(x + w) #interchanged
+        #pt1 = int(y), int(x) #interchanged
+        #pt2 = int(y + h), int(x + w) #interchanged
+        pt1 = int(x), int(y)  # interchanged
+        pt2 = int(x + w), int(y + h) #interchanged
         cv2.rectangle(self.image, pt1, pt2, self._color, self.thickness)
         if label is not None:
             text_size = cv2.getTextSize(

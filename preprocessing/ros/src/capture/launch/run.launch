@@ -1,3 +1,35 @@
 <launch>
-<node name="image_read" type="image_read" pkg="capture" args="_image_transport:=compressed" />
+<arg name="rosbag"/>
+
+<node pkg="rosbag" type="play" name="rosbag_record_compressed_data" respawn="true" args="--clock -r 0.1 $(arg rosbag)" />
+
+
+<node pkg="image_transport" type="republish" name="mp09_republish_pylon_near" args="compressed in:=/mp09/pylon_camera_node_near/image_raw/ raw out:=/mp09/pylon_camera_node_near/image_raw/" />
+  
+<node pkg="image_transport" type="republish" name="mp09_republish_pylon_far" args="compressed in:=/mp09/pylon_camera_node_far/image_raw/ raw out:=/mp09/pylon_camera_node_far/image_raw/" />
+  
+<node pkg="image_transport" type="republish" name="mp10_republish_pylon_near" args="compressed in:=/mp10/pylon_camera_node_near/image_raw/ raw out:=/mp10/pylon_camera_node_near/image_raw/" />
+  
+<node pkg="image_transport" type="republish" name="mp10_republish_pylon_far" args="compressed in:=/mp10/pylon_camera_node_far/image_raw/ raw out:=/mp10/pylon_camera_node_far/image_raw/" />
+  
+<node pkg="image_proc" type="image_proc" ns="/mp09/pylon_camera_node_near" name="mp09_image_proc_pylon_near"/>
+<node pkg="image_proc" type="image_proc" ns="/mp09/pylon_camera_node_far" name="mp09_image_proc_pylon_far"/>
+<node pkg="image_proc" type="image_proc" ns="/mp10/pylon_camera_node_near" name="mp10_image_proc_pylon_near"/>
+<node pkg="image_proc" type="image_proc" ns="/mp10/pylon_camera_node_far" name="mp10image_proc_pylon_far"/> 
+
+<arg name="username_for_path" default="ashwath"/>
+
+<node name="image_read_near" type="image_read" pkg="capture" output="screen">
+<param name="mkdir_tmp" command="mkdir -m 777 -p /home/$(arg username_for_path)/fieldtest_data/mp10/pylon_camera_node_near" />
+<param name="input_topic" value="/mp10/pylon_camera_node_near/image_rect_color" />
+<param name="save_dir" value="/home/$(arg username_for_path)/fieldtest_data/mp10/pylon_camera_node_near/" />
+</node>
+
+<node name="image_read_far" type="image_read" pkg="capture" output="screen">
+<param name="mkdir_tmp" command="mkdir -m 777 -p /home/$(arg username_for_path)/fieldtest_data/mp10/pylon_camera_node_far" />
+<param name="input_topic" value="/mp10/pylon_camera_node_far/image_rect_color" />
+<param name="save_dir" value="/home/$(arg username_for_path)/fieldtest_data/mp10/pylon_camera_node_far/" />
+</node>
+
+
 </launch>
