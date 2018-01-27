@@ -8,6 +8,7 @@ def generate_detections(input_dir, output_file):
     for filename in os.listdir(input_dir):
         xml_files.append(str(os.path.join(input_dir, filename)))
     counter = 1
+    xml_files.sort()
     for filename in xml_files:
         xmin = []
         ymin = []
@@ -29,6 +30,7 @@ def generate_detections(input_dir, output_file):
                         print(bnd.tag, bnd.text)
         for i in range(0,len(xmin)):
             save_file.write("%d,-1,%f,%f,%f,%f,0.83,-1,-1,-1\n"%(counter,xmin[i],ymin[i],xmax[i]-xmin[i],ymax[i]-ymin[i]))
+        counter += 1
 
     print(xml_files)
     save_file.close()
