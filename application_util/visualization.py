@@ -75,6 +75,9 @@ class NoVisualization(object):
     def draw_trackers(self, trackers):
         pass
 
+    def draw_gt(self, trackers, box):
+        pass
+
     def run(self, frame_callback):
         while self.frame_idx <= self.last_idx:
             frame_callback(self, self.frame_idx)
@@ -131,4 +134,15 @@ class Visualization(object):
                 *track.to_tlwh().astype(np.int), label=str(track.track_id))
             # self.viewer.gaussian(track.mean[:2], track.covariance[:2, :2],
             #                      label="%d" % track.track_id)
+
+    def draw_gt(self, box):
+        '''
+        Display ground truth detection with corresponding tracker ID.
+        :param box: box list containing the tracker ID and the x,y,w,h for the bounding box
+        :return: draws bounding box with tracker ID on the image
+        '''
+        self.viewer.thickness = 2
+        for i in range(0,len(box)):
+            self.viewer.color = create_unique_color_uchar(box[i][1])
+            self.viewer.rectangle(box[i][2],box[i][3],box[i][4],box[i][5],label=str(box[i][1]))
 #

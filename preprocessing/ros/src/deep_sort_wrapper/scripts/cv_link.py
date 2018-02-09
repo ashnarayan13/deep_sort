@@ -18,6 +18,7 @@ class image_converter:
     self.image_sub = rospy.Subscriber("image_topic",Image,self.callback)
 
   def callback(self,data):
+    #Incorporate deep_sort here
     try:
       cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
     except CvBridgeError as e:

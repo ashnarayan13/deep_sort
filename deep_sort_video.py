@@ -176,44 +176,27 @@ def run(sequence_dir, detection_file, output_file, min_confidence,
         scores = np.array([d.confidence for d in detections])
         indices = preprocessing.non_max_suppression(
             boxes, nms_max_overlap, scores)
-        print('Indices',len(indices))
         detections = [detections[i] for i in indices]
-        print('Detections', len(detections))
-        print('Boxes',len(boxes))
 
         # Update tracker.
         tracker.predict()
         tracker.update(detections)
-
-        #Store the output bounding box and tracker id for current frame
-        display_box = []
-        # Store results.
-        for track in tracker.tracks:
-            if not track.is_confirmed() or track.time_since_update > 1:
-                continue
-            bbox = track.to_tlwh()
-            #compare the tracker output bounding box with the ground truth and pick the closest match
-            replace = [100,100,100,100]
-            index = 0
-            for i in range(0,len(boxes)):
-                C = [abs(a-b) for a,b in zip(bbox,boxes[i])]
-                if C < replace:
-                    replace = C
-                    index = i
-            print('Best match ', replace)
-            results.append([
-                frame_idx, track.track_id, boxes[index][0], boxes[index][1], boxes[index][2], boxes[index][3]])
-            display_box.append([
-                frame_idx, track.track_id, boxes[index][0], boxes[index][1], boxes[index][2], boxes[index][3]])
 
         # Update visualization.
         if display:
             image = cv2.imread(
                 seq_info["image_filenames"][frame_idx], cv2.IMREAD_COLOR)
             vis.set_image(image.copy())
-            # vis.draw_detections(detections)
-            #vis.draw_trackers(tracker.tracks)
-            vis.draw_gt(display_box)
+            vis.draw_detections(detections)
+            vis.draw_trackers(tracker.tracks)
+
+        # Store results.
+        for track in tracker.tracks:
+            if not track.is_confirmed() or track.time_since_update > 1:
+                continue
+            bbox = track.to_tlwh()
+            results.append([
+                frame_idx, track.track_id, bbox[0], bbox[1], bbox[2], bbox[3]])
 
     # Run tracker.
     if display:
